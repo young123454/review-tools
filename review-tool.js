@@ -2,6 +2,15 @@
   const endpoint = "https://script.google.com/macros/s/AKfycbwKsFrlDHadwupHmWbmv9S8z_3Stt_vlR0LyoQbNE2svYL9h2sTUv-HF3wQp4RNAYJT/exec";
   const sessionKey = "__review_export_ready";
 
+  // 如果是跳转回来，立即恢复执行
+  if (sessionStorage.getItem(sessionKey) === "1") {
+    sessionStorage.removeItem(sessionKey);
+    window.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => startExportUI(), 1000);
+    });
+    return;
+  }
+
   const name = prompt("请输入用户名（系统将记录配额）");
   if (!name) {
     alert("用户名不能为空！");
@@ -28,17 +37,13 @@
     return;
   }
 
-  if (sessionStorage.getItem(sessionKey) === "1") {
-    sessionStorage.removeItem(sessionKey);
-    setTimeout(() => startExportUI(), 1000);
-  } else {
-    startExportUI();
-  }
+  startExportUI();
 
+  // 以下是导出评论逻辑，与之前一致
   function startExportUI(){
     if(document.getElementById("review-export-ui")) return;
     const s=document.createElement("style");
-    s.textContent="#review-export-ui{position:fixed;top:20%;left:50%;transform:translateX(-50%);background:white;border:2px solid #444;border-radius:8px;padding:20px;z-index:99999;box-shadow:0 4px 12px rgba(0,0,0,0.2);font-family:sans-serif;}#review-export-ui h3{margin-top:0;}#review-export-ui label{display:inline-block;margin:5px;padding:6px 10px;border:1px solid #888;border-radius:4px;cursor:pointer;user-select:none;}#review-export-ui label.selected{background:#007bff;color:white;border-color:#0056b3;}#review-export-ui button{margin-top:10px;padding:6px 14px;font-size:14px;}";
+    s.textContent="#review-export-ui{position:fixed;top:20%;left:50%;transform:translateX(-50%);background:white;border:2px solid #444;border-radius:8px;padding:20px;z-index:99999;box-shadow:0 4px 12px rgba(0,0,0,0.2);font-family:sans-serif;}#review-export-ui h3{margin-top:0;}#review-export-ui label{display:inline-block;margin:5px;padding:6px 10px;border:1px solid #888;border-radius:4px;cursor:pointer;user-select:none;}#review-export-ui label.selected{background:#007bff;color:white;border-color:#0056b3;}...
     document.head.appendChild(s);
     const b=document.createElement("div");
     b.id="review-export-ui";
